@@ -1,4 +1,4 @@
-import subprocess
+import os, subprocess, time
 
 class Tegrastats:
     def __init__(self, interval, log_file, verbose):
@@ -7,12 +7,12 @@ class Tegrastats:
         self.verbose = verbose
 
     def prepare_command(self):
-        tegrastats_cmd = f"tegrastats --interval {self.interval}"
+        tegrastats_cmd = f"sudo -S tegrastats --interval {self.interval} < password.secret"
 
         if self.verbose:
             tegrastats_cmd = tegrastats_cmd + " --verbose"
 
-        cmd = f"{{ echo $(date -u) & {tegrastats_cmd}; }} > {self.log_file}"
+        cmd = f"{{ echo $(date -u)'\n'{time.time()} & {tegrastats_cmd}; }} > {self.log_file}"
         return cmd
 
     def run(self):
@@ -30,6 +30,7 @@ class Tegrastats:
             user_input = input()
             if (user_input == "exit"):
                 try:
+                    subprocess.Popen("sudo tegrastats --stop", shell=True)
                     process.kill()
                     print("Successfully stopped tegrastats!")
                     break

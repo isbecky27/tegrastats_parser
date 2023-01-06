@@ -85,17 +85,17 @@ class Parse:
 
         mts = re.findall(r'MTS fg ([0-9]*)% bg ([0-9]*)%', line) # !!!!
 
-        temperatures = re.findall(r'([A-Za-z]*)@([0-9.]*)C', line)
+        temperatures = re.findall(r'([A-Za-z0-9]*)@([0-9.-]*)C', line)
         vdds = None
 
         if temperatures:
             self.parse_temperatures(lookup_table, temperatures)
             substring = line[(line.rindex(temperatures[-1][1] + "C") + len(temperatures[-1][1] + "C")):]
 
-            vdds = re.findall(r'([A-Za-z0-9_]*) ([0-9]*)\/([0-9]*)', substring)
+            vdds = re.findall(r'([A-Za-z0-9_]*) ([0-9]*)[a-zA-Z]*\/([0-9]*)[a-zA-Z]*', substring)
 
         else:
-            vdds = re.findall(r'VDD_([A-Za-z0-9_]*) ([0-9]*)\/([0-9]*)', line)
+            vdds = re.findall(r'VDD_([A-Za-z0-9_]*) ([0-9]*)[a-zA-Z]*\/([0-9]*)[a-zA-Z]*', line)
         self.parse_vdds(lookup_table, vdds) if vdds else None
 
         return lookup_table
